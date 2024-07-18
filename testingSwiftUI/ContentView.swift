@@ -11,35 +11,36 @@ import SwiftUI
 struct ContentView: View {
     
     //Theme arrays
-    let halloweenEmojis = ["🎃", "👻", "🕸️", "🕷️", "🧙‍♀️", "🧟‍♂️", "🧛‍♂️", "💀", "⚰️", "🪦", "🌕", "🧛‍♀️", "🧙‍♂️", "🧟‍♀️", "🍬"]
-    let summerEmojis = ["🌞", "🏖️", "🌴", "🍉", "🍦", "🌊", "🏄‍♂️", "👙", "🌺", "🍹", "🏊‍♀️", "🕶️", "🐚", "🏝️", "🩴"]
-    let xmasEmojis = ["🎄", "🎅", "🤶", "🎁", "🦌", "⛄", "❄️", "🔔", "🕯️", "🍪", "🥛", "🌟", "🧦", "🎀", "🛷"]
+    let halloweenEmojis = ["🎃", "🎃", "👻", "👻", "🕸️", "🕸️", "🕷️", "🕷️", "🧟‍♂️", "🧟‍♂️"]
+    let summerEmojis = ["🌞", "🌞", "🏖️", "🏖️", "🌴", "🌴", "🍉", "🍉", "🍦", "🍦"]
+    let xmasEmojis = ["🎄", "🎄", "🎅", "🎅", "🤶", "🤶", "🎁", "🎁", "🦌", "🦌"]
 
     //Default card count
-    @State var cardCount: Int = 4
+    @State var cardCount: Int = 10
     //Default chosen theme
-    @State var chosenTheme: [String] = ["🎃", "👻", "🕸️", "🕷️"]
+    @State var chosenTheme = ["🎃", "🎃", "👻", "👻", "🕸️", "🕸️", "🕷️", "🕷️", "🧟‍♂️", "🧟‍♂️"]
+    //Default color
+    @State var themeColor = Color(.orange)
     
     var body: some View {
         VStack {
             Text("Memorize!").font(.largeTitle)
-            ScrollView{
                 cards
+                Spacer()
                 buttons
-            }
-            Spacer()
         }.padding()
     }
     
     //MARK: ContentView Components
     var cards: some View {
         
-        return LazyVGrid(columns: [GridItem(), GridItem()]) {
+        return LazyVGrid(columns: [GridItem(.adaptive(minimum: 65, maximum: 85))], spacing: 10) {
+            
             ForEach(0..<cardCount, id: \.self) { index in
-                CardView(content: chosenTheme[index]).aspectRatio(2/3, contentMode: .fit)
+                CardView(content: chosenTheme.shuffled()[index])
             }
         }
-        .foregroundColor(.orange)
+        .foregroundColor(themeColor).padding()
     }
     
     var buttons: some View {
@@ -50,31 +51,45 @@ struct ContentView: View {
             Spacer()
             xmasButton
             
-        }.padding().imageScale(.large).font(.largeTitle)
+        }.padding()
     }
     
     var halloweenButton: some View {
         Button(action: {
             chosenTheme = halloweenEmojis
+            themeColor = Color(.orange)
         }, label: {
-            Text("👻")
+            VStack{
+//                Text("👻").font(.largeTitle)
+                Image(systemName: "wand.and.stars").font(.largeTitle)
+                Text("Spooky")
+            }
         })
     }
     
     var summerButton: some View {
         Button(action: {
             chosenTheme = summerEmojis
+            themeColor = Color(.blue)
         }, label: {
-            Text("☀️")
+            VStack{
+//                Text("☀️").font(.largeTitle)
+                Image(systemName: "sun.max").font(.largeTitle)
+                Text("Summer")
+            }
         })
     }
     
     var xmasButton: some View {
         Button(action: {
             chosenTheme = xmasEmojis
-            print("Chosen theme: \(chosenTheme)")
+            themeColor = Color(.red)
         }, label: {
-            Text("🎅🏻")
+            VStack{
+//                Text("🎅🏻").font(.largeTitle)
+                Image(systemName: "gift").font(.largeTitle)
+                Text("Christmas")
+            }
         })
     }
     
@@ -103,7 +118,7 @@ struct CardView: View {
         }
         .onTapGesture {
             isFaceUp.toggle()
-        }
+        }.aspectRatio(2/3, contentMode: /*@START_MENU_TOKEN@*/.fill/*@END_MENU_TOKEN@*/)
     }//end of body
 }//end of CardView
 
